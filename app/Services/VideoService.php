@@ -7,46 +7,50 @@ use ApiVideo\Client\Model\Video as ApiVideo;
 use ApiVideo\Client\Model\VideoCreationPayload;
 use App\Models\Video;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use SplFileObject;
 use Symfony\Component\HttpClient\Psr18Client;
 
 class VideoService
 {
-    public function getVideos(): array 
+    public function getVideos($userId): Collection 
     {
-    
-        $videos= Video::paginate(10);
+        $videos= Video::where('user_id', $userId)->get();
 
-        return $videos->items();
+        return $videos;
     }
 
     public function uploadVideo($userId, $videoTitle , $videoPath)
     {
-        $videoModel = Video::create([
-            'user_id' => $userId,
-            'title' => $videoTitle, 
-            'local_path' => $videoPath
-        ]);
-        
         $client = $this->getApiVideoClient();
 
         $payload = (new VideoCreationPayload())
             ->setTitle($videoTitle);
     
-
         $video = $client->videos()->create($payload);
-        $client->videos()->upload($video->getVideoId(), new SplFileObject(Storage::path($videoPath)));
-
-        // @todo store all video info into local DB
-        // dump($video);
-
-        $videoModel->api_video_id = $video->getVideoId();
-        $videoModel->player = $video->getAssets()->getPlayer();
-        $videoModel->thumbnail = $video->getAssets()->getThumbnail();
         
+        
+        try {
+            $videoModel = Video::create([
+                'user_id' => $userId,
+                'title' => $videoTitle, 
+                'local_path' => $videoPath
+            ]);
+        
+            $client->videos()->upload($video->getVideoId(), new SplFileObject(Storage::path($videoPath)));
+            $videoModel->api_video_id = $video->getVideoId();
+            $videoModel->player = $video->getAssets()->getPlayer();
+            $videoModel->thumbnail = $video->getAssets()->getThumbnail();
+            $videoModel->api_video_source = $video->getAssets()->getMp4();
+    
+            $videoModel->save();
 
-        $videoModel->save();
+        } catch (\Throwable $th) {
+            $videoModel->delete();
+            throw new Exception("there is an issue while uploading a video");
+        }
+
 
         return $videoModel;
     }
@@ -66,7 +70,7 @@ class VideoService
             Storage::delete($videoModel->local_path);
             $videoModel->delete();
         } catch (\Throwable $th) {
-            throw new Exception("there is an issue while deleting an video");
+            throw new Exception("there is an issue while deleting a video");
         }
     }
 

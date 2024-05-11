@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("description")->nullable();
             $table->string("player")->nullable();
             $table->string("thumbnail")->nullable();
+            $table->string("api_video_source")->nullable();
 
             $table->string("status")->nullable();
             $table->string("user_id");
