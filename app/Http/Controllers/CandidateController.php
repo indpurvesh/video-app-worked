@@ -14,6 +14,19 @@ class CandidateController extends Controller
         $this->videoService = $videoService;
     }
 
+    public function myaccount() {
+        return view('candidate.my-account');
+    }
+
+    public function upload() {
+        return view('candidate.upload');
+    }
+
+    public function recording() {
+        return view('candidate.recording');
+    }
+
+
     public function index(Request $request)
     {
         $userId = $request->get('user_id', 1);

@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.video-container {
+    margin-inline: auto;
+    width: min(90%, 70rem);
+}
+
+.record-video {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    gap: 1rem;
+    height: calc(100vh - 2rem);
+    
+}
+
+.video {
+    height: 100%;
+    aspect-ratio: 9 / 16;
+    position: relative;
+    border-radius: 1rem;
+    max-width: calc(100vw - 2.5rem);
+    overflow: hidden;
+}

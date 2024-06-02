@@ -8,6 +8,7 @@ use ApiVideo\Client\Model\VideoCreationPayload;
 use App\Models\Video;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use SplFileObject;
 use Symfony\Component\HttpClient\Psr18Client;
@@ -46,8 +47,8 @@ class VideoService
     
             $videoModel->save();
 
-        } catch (\Throwable $th) {
-            $videoModel->delete();
+        } catch (Exception $e) {
+            Log::error("api upload video error: " . $e->getMessage());
             throw new Exception("there is an issue while uploading a video");
         }
 
@@ -66,10 +67,12 @@ class VideoService
         $client = $this->getApiVideoClient();
 
         try {
-            $client->videos()->delete($videoModel->api_video_id);
-            Storage::delete($videoModel->local_path);
+            // $client->videos()->delete($videoModel->api_video_id);
+            // Storage::delete($videoModel->local_path);
             $videoModel->delete();
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
+            Log::error("delete video  " . $videoId . " error " . $e->getMessage());
+            
             throw new Exception("there is an issue while deleting a video");
         }
     }
