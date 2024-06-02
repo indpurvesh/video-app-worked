@@ -24,18 +24,13 @@ class VideoController extends Controller
 
     public function upload(VideoUploadRequest $request)
     {
-        $userId = $request->get('user_id', 1);
-        
-       
-        $fileName = $request->file("video")->store('videos');
-        
-        $title = $request->get('title', 'Test video title');
-       
-        $this->videoService->uploadVideo($userId, $title, $fileName);
-    
-       
+        $model = $this->uploadVideo(($request));
+        return $model;
+    }
+    public function formupload(VideoUploadRequest $request)
+    {
+        $model = $this->uploadVideo(($request));
         return redirect()->route("my-video");
-        
     }
 
     public function delete(string $videoId, Request $request)
@@ -43,5 +38,19 @@ class VideoController extends Controller
         $this->videoService->deleteVideo($videoId);
 
         return new JsonResponse();
+    }
+
+    private function uploadVideo(VideoUploadRequest $request) 
+    {
+        $userId = $request->get('user_id', 1);
+        
+       
+        $fileName = $request->file("video")->store('videos');
+        
+        $title = $request->get('title', 'Test video title');
+       
+        $videoModel = $this->videoService->uploadVideo($userId, $title, $fileName);
+
+        return $videoModel;
     }
 }

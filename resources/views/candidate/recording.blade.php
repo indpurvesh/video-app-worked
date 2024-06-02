@@ -121,6 +121,7 @@
                 .catch(log);
         }, false);
     }
+   
     if (downloadButton) {
         downloadButton.addEventListener("click", function() {
 
@@ -132,9 +133,7 @@
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    if (res.success) {
-                        location = "/my-video";
-                    }
+                    location = '{{ route("my-video") }}'
                 }
             });
         }, false);

@@ -9,14 +9,18 @@
             <h1 class="text-primary-500 font-semibold text-2xl">
                 Upload Video
             </h1>
-            <form action="{{route('api.video.upload')}}" method="post" enctype="multipart/form-data">
+            <form action="{{route('api.video.formupload')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="user_id" value="1" />
                 <div class="mt-5">
                     <label class="block">
                         Video title
                     </label>
-                    <input class="mt-5 ring-1 ring-primary-600 rounded block w-full px-2 py-2" type="text" name="title" />
+                    <input 
+                        class="mt-5 ring-1 ring-primary-600 rounded block w-full px-2 py-2" 
+                        type="text" 
+                        value="{{ old('title') }}"
+                        name="title" />
                    
                     @if($errors->has('title'))
                         <p class="text-red-500 tex-tsm mt-1">
