@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
             $table->string("api_video_id")->nullable();
-            $table->string("local_path")->nullable();
+            $table->boolean("is_featured")->default(false);
 
             $table->string("title")->nullable();
             $table->string("description")->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string("thumbnail")->nullable();
             $table->string("api_video_source")->nullable();
 
-            $table->string("status")->nullable();
+            $table->string("status")->default('draft');
             $table->string("user_id");
             $table->timestamps();
             $table->softDeletes();

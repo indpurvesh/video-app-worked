@@ -15,7 +15,7 @@ use Symfony\Component\HttpClient\Psr18Client;
 
 class VideoService
 {
-    public function getVideos($userId): Collection 
+    public function getVideos(int $userId): Collection 
     {
         $videos= Video::where('user_id', $userId)->get();
 
@@ -36,7 +36,6 @@ class VideoService
             $videoModel = Video::create([
                 'user_id' => $userId,
                 'title' => $videoTitle, 
-                'local_path' => $videoPath
             ]);
         
             $client->videos()->upload($video->getVideoId(), new SplFileObject(Storage::path($videoPath)));
@@ -56,6 +55,25 @@ class VideoService
         return $videoModel;
     }
 
+    public function saveFeatured($videoId)
+    {
+        $video = Video::find($videoId);
+        if (null === $video) {
+            throw new Exception("no video found with given video Id");
+        }
+
+        $video->is_featured = true;
+        $video->save();
+
+        return $video;
+    }
+
+    public function getFeaturedVdieos(int $noOfVideo) {
+        $videos = Video::where('is_featured', true)->paginate($noOfVideo);
+
+        return $videos;
+    }
+
     public function deleteVideo($videoId) 
     {
         $videoModel = Video::find($videoId);
@@ -68,6 +86,8 @@ class VideoService
 
         try {
             // $client->videos()->delete($videoModel->api_video_id);
+
+            // @todo delete video from local folder
             // Storage::delete($videoModel->local_path);
             $videoModel->delete();
         } catch (Exception $e) {

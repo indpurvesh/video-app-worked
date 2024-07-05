@@ -18,8 +18,18 @@ class VideoController extends Controller
 
     public function index(Request $request)
     {
+        if ($request->get('type') === 'featured') 
+        {
+            return $this->videoService->getFeaturedVdieos($request->get('no_of_video', 1)); 
+        }
+
         $userId = $request->get('user_id', 1);
         return $this->videoService->getVideos($userId);
+    }
+
+    public function saveFeatured($videoId) 
+    {
+        return $this->videoService->saveFeatured($videoId);
     }
 
     public function upload(VideoUploadRequest $request)
@@ -42,7 +52,7 @@ class VideoController extends Controller
 
     private function uploadVideo(VideoUploadRequest $request) 
     {
-        $userId = $request->get('user_id', 1);
+        $userId = auth()->user()->id;
         
        
         $fileName = $request->file("video")->store('videos');

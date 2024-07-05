@@ -18,7 +18,7 @@ class Video extends Model
         "thumbnail",
         "status",
         "api_video_id",
-        "local_path",
+        "is_featured",
         "api_video_source"
     ];
 }
