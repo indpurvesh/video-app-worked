@@ -333,35 +333,34 @@
                 (entries) => {
                     entries.forEach((entry) => {
                         if (
-                            entry.isIntersecting 
+                            entry.isIntersecting
                             // &&
                             // entry.target.id !== playingVideo &&
                             // (entry.target)?.paused
                         ) {
-                            playShort('#'+ jQuery(entry.target).attr('id'))
-                            unmuteShort('#'+ jQuery(entry.target).attr('id'))
+                            playShort('#' + jQuery(entry.target).attr('id'))
+                            unmuteShort('#' + jQuery(entry.target).attr('id'))
                             // alert(jQuery(entry.target).attr('id'))
                             // 
                             return;
                         }
                         if (!entry.isIntersecting) {
                             // is_first_time = false
-                            pauseShort('#'+ jQuery(entry.target).attr('id'))
+                            pauseShort('#' + jQuery(entry.target).attr('id'))
                             // muteShort('#'+ jQuery(entry.target).attr('id'))
-                            
+
                             return;
                         }
                     });
-                    },
-                    {
-                        threshold: 0.5,
-                    }
-                );
+                }, {
+                    threshold: 0.5,
+                }
+            );
 
-                const boxElList = document.querySelectorAll(".video-short");
-                    boxElList.forEach((el) => {
-                    io.observe(el);
-                });
+            const boxElList = document.querySelectorAll(".video-short");
+            boxElList.forEach((el) => {
+                io.observe(el);
+            });
             // observer.observe(document.getElementById());
 
 
@@ -375,7 +374,7 @@
                 el
             }))
 
-           
+
             const storeBounds = () => {
                 // Store the bounds of the container
                 containerBounds = container.getBoundingClientRect() // triggers reflow
@@ -389,7 +388,7 @@
 
             function detectCurrent() {
                 // console.log(window.x = container)
-              
+
                 if (typeof container.height == 'undefined') {
                     return
                 }
@@ -458,9 +457,9 @@
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
     <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
         <div class="relative min-h-screen flex flex-col items-center justify-center">
-            
+
             @include('layout.sidebar')
-        <div class="text-3xl font-semibold max-w-2xl px-6 lg:max-w-7xl">
+            <div class="text-3xl font-semibold max-w-2xl px-6 lg:max-w-7xl">
                 <section class="videos">
                     <div>
                         <div class="sc-gEvDqW igBNhA container">
@@ -469,13 +468,7 @@
                                     @foreach($videos as $video)
                                     <div class="snap-center sc-aYaIB ljGWXL" data-video-id="video-{{ $video->id}}">
                                         <div class="video selected">
-                                            <video 
-                                                loop 
-                                                muted
-                                                class="video-short"
-                                                src="{{$video->api_video_source}}" 
-                                                poster="{{ $video->thumbnail }}" 
-                                                id="video-{{ $video->id }}"></video>
+                                            <video loop muted class="video-short" src="{{$video->api_video_source}}" poster="{{ $video->thumbnail }}" id="video-{{ $video->id }}"></video>
                                             <div class="video-actions">
                                                 <div class="play-pause icon-play" onclick="pauseShort('#video-{{$video->id}}')">
                                                     <button>

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("api_video_id")->nullable();
             $table->boolean("is_featured")->default(false);
+            $table->boolean("is_favorite")->default(false);
+            $table->boolean("is_approved")->default(false);
 
             $table->string("title")->nullable();
             $table->string("description")->nullable();

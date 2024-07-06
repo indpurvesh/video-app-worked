@@ -19,6 +19,16 @@ class CandidateController extends Controller
         $this->userService = $userService;
     }
 
+    public function SaveSuspend($userId) 
+    {
+        $this->userService->saveSuspend($userId);
+    }
+
+    public function SaveHired($userId)
+    {
+        $this->userService->saveHired($userId);
+    }
+
     public function myaccount() {
         return view('candidate.my-account');
     }
@@ -33,29 +43,30 @@ class CandidateController extends Controller
 
     public function index(Request $request)
     {   
-        $userId = auth()->user()->id;
-
+        $user = auth()->user();
         // only perform below in the event of no session
-        if (null === $userId) {
+        if (null === $user) {
 
             $userId = $request->get('candidateid');
             if (null !== $userId) {
                 $this->userService->authCandidate($userId);
+            } elseif(null !== $request->get('employerid')) {
+                $this->userService->authEmployer($request->get('employerid'));
+            } else {
+                throw new \Exception("id is required");
             }
-    
-    
-            $userId = $request->get('employerid');
-            if (null !== $userId) {
-                $this->userService->authEmployer($userId);
-            }
-    
         }
-          
+        $user = auth()->user();
+        $status = $request->get('status');
+        $noOfVideos = $request->get('showvideos');
+        $recordFlag = $request->get('record', null);
+        $favorite = $request->get('employerfav', false);
 
-        $videos = $this->videoService->getVideos($userId);
+        $videos = $this->videoService->getVideos($user->id, $status, $noOfVideos, $favorite);
 
         return view('candidate.index-bk')
-            ->with('videos', $videos);
+            ->with('videos', $videos)
+            ->with('recordFlag', $recordFlag);
     }
 
     public function getFeatured(Request $request) {

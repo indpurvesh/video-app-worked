@@ -7,6 +7,21 @@ use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
+    public function saveSuspend($userId) {
+        User::destroy($userId);
+    }
+
+    public function saveHired($userId) {
+        $user = User::where('wp_id', $userId)->first();
+
+        $videos = $user->videos();
+        foreach($videos as $video) {
+            $video->delete();
+        }
+
+        $user->delete();
+    }
+    
     public function authCandidate($userId)
     {
         if (null === $userId) {

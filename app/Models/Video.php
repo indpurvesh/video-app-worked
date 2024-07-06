@@ -19,6 +19,12 @@ class Video extends Model
         "status",
         "api_video_id",
         "is_featured",
+        'is_favorite',
+        "is_approved",
         "api_video_source"
     ];
+
+    public function user() {
+        $this->belongsTo(User::class);
+    }
 }

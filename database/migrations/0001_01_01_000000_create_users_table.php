@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("type")->default("candidate");
             $table->integer("wp_id");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -15,11 +15,22 @@ use Symfony\Component\HttpClient\Psr18Client;
 
 class VideoService
 {
-    public function getVideos(int $userId): Collection 
+    public function getVideos(int $userId, $status = null, $noOfVideo = null, $favorite = false): Collection 
     {
-        $videos= Video::where('user_id', $userId)->get();
+        $query = Video::where('user_id', $userId)
+            ->where('status', "draft")->orWhere('status', 'published')
+            ->where('is_approved', true);
+        if (null !== $status) {
+            $query->where('status', $status);
+        }
+        if ($favorite) {
+            $query->where('is_favorite', $favorite);
+        }
+        if ($noOfVideo === null) {
+            return $query->get();
+        }
 
-        return $videos;
+        return $query->paginate($noOfVideo);
     }
 
     public function uploadVideo($userId, $videoTitle , $videoPath)
