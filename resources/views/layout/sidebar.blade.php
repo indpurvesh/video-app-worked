@@ -15,7 +15,7 @@
                     </div>
 
                     
-                    @if ($recordFlag !== null)
+                    @if (isset($recordFlag) && $recordFlag !== null)
                         @if(Route::is('recording'))
                             <div id="startButton" class="mt-5 ring-1 cursor-pointer ring-primary-600 text-white rounded px-4 py-2 bg-primary-500">
                                 Recording
