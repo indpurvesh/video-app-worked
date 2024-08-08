@@ -11,7 +11,7 @@
             </h1>
             <form action="{{route('api.video.formupload')}}" method="post" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="user_id" value="1" />
+                <input type="hidden" name="user_id" value="{{auth()->user()->id}}" />
                 <div class="mt-5">
                     <label class="block">
                         Video title
