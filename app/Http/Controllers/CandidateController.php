@@ -33,17 +33,8 @@ class CandidateController extends Controller
         return view('candidate.my-account');
     }
 
-    public function upload() {
-        return view('candidate.upload');
-    }
-
-    public function recording() {
-        return view('candidate.recording');
-    }
-
-    public function index(Request $request)
-    {   
-        $user = auth()->user();
+    public function upload(Request $request) {
+        $user = Auth::user();
         // only perform below in the event of no session
         if (null === $user) {
 
@@ -56,7 +47,30 @@ class CandidateController extends Controller
                 throw new \Exception("id is required");
             }
         }
-        $user = auth()->user();
+
+        return view('candidate.upload');
+    }
+
+    public function recording() {
+        return view('candidate.recording');
+    }
+
+    public function index(Request $request)
+    {   
+        $user = Auth::user();
+        // only perform below in the event of no session
+        if (null === $user) {
+
+            $userId = $request->get('candidateid');
+            if (null !== $userId) {
+                $this->userService->authCandidate($userId);
+            } elseif(null !== $request->get('employerid')) {
+                $this->userService->authEmployer($request->get('employerid'));
+            } else {
+                throw new \Exception("id is required");
+            }
+        }
+        $user = Auth::user();
         $status = $request->get('status');
         $noOfVideos = $request->get('showvideos');
         $recordFlag = $request->get('record', null);

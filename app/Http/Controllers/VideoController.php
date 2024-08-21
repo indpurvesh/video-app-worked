@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\VideoUploadRequest;
+use App\Services\UserService;
 use App\Services\VideoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VideoController extends Controller
 {
     protected VideoService $videoService;
+    protected UserService $userService;
 
-    public function __construct(VideoService $videoService)
+    public function __construct(VideoService $videoService, UserService $userService)
     {
         $this->videoService = $videoService;
+        $this->userService = $userService;
     }
 
     public function index(Request $request)
@@ -34,6 +38,19 @@ class VideoController extends Controller
 
     public function upload(VideoUploadRequest $request)
     {
+        $user = Auth::user();
+        // only perform below in the event of no session
+        if (null === $user) {
+
+            $userId = $request->get('candidateid');
+            if (null !== $userId) {
+                $this->userService->authCandidate($userId);
+            } elseif(null !== $request->get('employerid')) {
+                $this->userService->authEmployer($request->get('employerid'));
+            } else {
+                throw new \Exception("id is required");
+            }
+        }
         $model = $this->uploadVideo(($request));
         return $model;
     }
@@ -52,7 +69,7 @@ class VideoController extends Controller
 
     private function uploadVideo(VideoUploadRequest $request) 
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
         
        
         $fileName = $request->file("video")->store('videos');
